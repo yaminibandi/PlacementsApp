@@ -3,6 +3,7 @@ package com.develop.android.placements;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,7 +86,7 @@ public class ShowCompanyDetails extends AppCompatActivity {
                 cname.setText(cd.companyName);
                 jdhm=cd.jd;
                 echm=cd.ec;
-                if((NULL).equals(jdhm)) {
+                if(!(NULL).equals(jdhm)) {
                     for (Map.Entry mapElement : jdhm.entrySet()) {
                         String key = (String) mapElement.getKey();
                         String value = (String) mapElement.getValue();
@@ -95,7 +97,7 @@ public class ShowCompanyDetails extends AppCompatActivity {
                 {
                     jdhead.setVisibility(View.GONE);
                 }
-                if((NULL).equals(echm)) {
+                if(!(NULL).equals(echm)) {
                     for (Map.Entry mapElement : echm.entrySet()) {
                         String key = (String) mapElement.getKey();
                         String value = (String) mapElement.getValue();
@@ -116,67 +118,40 @@ public class ShowCompanyDetails extends AppCompatActivity {
         showiq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StorageReference ref = storageReference.child(companyName).child("Files/"+ "Interview_questions");
-
-
-                String directory_path = Environment.getExternalStorageDirectory().getPath() + "/Attendance/";
+                StorageReference ref = storageReference.child(companyName).child("Files/"+companyName+"Interview_questions");
+                String directory_path = Environment.getExternalStorageDirectory().getPath() + "/Placements/";
                 File file = new File(directory_path);
                 if (!file.exists()) {
                     file.mkdirs();
                 }
-                String targetPdf = directory_path + companyName+" Interview_Questions"+".pdf";
-                File filePath = new File(targetPdf);
-                try {
-                    if (hasWritePermissions()) {
-                        document.writeTo(new FileOutputStream(filePath));
-                        try {
-                            sleep(1000);
-                        } catch (Exception e) {
-
-                        }
-                        Toast.makeText(ShowCompanyDetails.this, "Pdf File Saved", Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (IOException e) {
-                    Toast.makeText(ShowCompanyDetails.this, "You didn't permit storage access", Toast.LENGTH_SHORT).show();
-                }
-
-
-                File localFile = new File(Environment.getExternalStorageDirectory() + "/Attendance/"+);
-                ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                File fileNameOnDevice = new File(directory_path+"/"+companyName+"Interview_questions.pdf");
+                ref.getFile(fileNameOnDevice).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Local temp file has been created
-                        Toast.makeText(ShowCompanyDetails.this,"Yay",Toast.LENGTH_LONG);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                        Toast.makeText(ShowCompanyDetails.this,exception.getMessage(),Toast.LENGTH_LONG);
+                        Toast.makeText(ShowCompanyDetails.this,"PDF File Saved",Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }
         });
         showid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StorageReference ref = storageReference.child(companyName).child("Files/"+ "d");
-                File localFile = new File(Environment.getExternalStorageDirectory() + "/Placements/"+companyName+" Interview_Details"+".pdf");
-                ref.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+
+                StorageReference ref = storageReference.child(companyName).child("Files/"+companyName+"Interview_details");
+                String directory_path = Environment.getExternalStorageDirectory().getPath() + "/Placements/";
+                File file = new File(directory_path);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                File fileNameOnDevice = new File(directory_path+"/"+companyName+"Interview_details.pdf");
+                ref.getFile(fileNameOnDevice).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Local temp file has been created
-                        Toast.makeText(ShowCompanyDetails.this,"Yay",Toast.LENGTH_LONG);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                        Toast.makeText(ShowCompanyDetails.this,exception.getMessage(),Toast.LENGTH_LONG);
-
+                        Toast.makeText(ShowCompanyDetails.this,"PDF File Saved",Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }
         });
     }
